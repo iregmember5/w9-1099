@@ -1,24 +1,20 @@
 import React, { useState } from "react";
 
 import {
-  Upload,
+
   Download,
-  Search,
-  ChevronDown,
-  Mail,
+
   Delete,
-  Backpack,
+
 } from "lucide-react";
-
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { HiOutlineArrowLeft } from "react-icons/hi";
-
+import type { Company, Vendor, VendorRequest } from "../../types/types";
 // Page 3: Vendor Request Page
 const VendorRequestPage: React.FC<{
   company: Company;
   onNext: (vendors: VendorRequest[]) => void;
   onBack: () => void;
-}> = ({ company, onNext, onBack }) => {
+}> = ({ onNext, onBack }) => {
   const [vendors, setVendors] = useState<Vendor[]>([
     { id: "1", name: "", email: "", accountNo: "" },
   ]);
@@ -306,3 +302,4 @@ const VendorRequestPage: React.FC<{
 };
 
 export default VendorRequestPage;
+

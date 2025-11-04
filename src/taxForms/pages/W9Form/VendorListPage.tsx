@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, Download, Search, ChevronDown, Mail } from "lucide-react";
+import { Download, Search, ChevronDown, Mail } from "lucide-react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
 
 // Types

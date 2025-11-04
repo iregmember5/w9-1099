@@ -3,6 +3,7 @@ import WelcomePage from "./pages/W9Form/WelcomePage";
 import CompanyForm from "./pages/W9Form/CompanyFormPage";
 import VendorRequestPage from "./pages/W9Form/VendorRequestPage";
 import VendorListPage from "./pages/W9Form/VendorListPage";
+import type { Company, VendorRequest } from "./types/types";
 const TaxFormsModule: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<
     "welcome" | "company" | "vendors" | "list"
