@@ -6,7 +6,7 @@ export const fetchLandingPageData = async (): Promise<LandingPageData> => {
     const isDevelopment = import.meta.env.DEV;
     const frontendUrl = isDevelopment
       ? "http://localhost:5173"
-      : "https://dynamic-cms-zeta.vercel.app";
+      : "https://w9-1099.vercel.app";
 
     const apiUrl = isDevelopment
       ? "/blogs/api/v2/mypages/"
