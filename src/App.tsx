@@ -1,9 +1,11 @@
-import React from 'react';
-import { AuthProvider} from './contexts/AuthContext';
-import { useAuth } from './hooks/useAuth';
-import { AuthModule } from './components/auth/AuthModule';
-import { DeploymentOptions } from './components/deployment/DeploymentOptions';
-import './index.css';
+import React from "react";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./hooks/useAuth";
+import { AuthModule } from "./components/auth/AuthModule";
+import { DeploymentOptions } from "./components/deployment/DeploymentOptions";
+
+import "./index.css";
+import LandingPage from "./pages/LandingPage";
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -50,9 +52,12 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <div>
+      <LandingPage />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </div>
   );
 }
 
