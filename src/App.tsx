@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./hooks/useAuth";
 import { AuthModule } from "./components/auth/AuthModule";
 import { DeploymentOptions } from "./components/deployment/DeploymentOptions";
-
 import "./index.css";
 import LandingPage from "./pages/LandingPage";
 
@@ -51,13 +50,26 @@ const AppContent: React.FC = () => {
 };
 
 function App() {
+  const [currentView, setCurrentView] = useState<"landing" | "login">(
+    "landing"
+  );
+
+  // Show landing page by default, show login only when user clicks CTA
+  const handleShowLogin = () => {
+    setCurrentView("login");
+  };
+
   return (
-    <div>
-      <LandingPage />
-      <AuthProvider>
+    <AuthProvider>
+      {currentView === "landing" ? (
+        <div>
+          {/* Pass the handler to LandingPage so CTA buttons can trigger login view */}
+          <LandingPage onShowLogin={handleShowLogin} />
+        </div>
+      ) : (
         <AppContent />
-      </AuthProvider>
-    </div>
+      )}
+    </AuthProvider>
   );
 }
 

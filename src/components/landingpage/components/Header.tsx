@@ -3,9 +3,10 @@ import type { LandingPageData } from "../../../types/landing";
 
 interface HeaderProps {
   data: LandingPageData;
+  onShowLogin?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ data }) => {
+const Header: React.FC<HeaderProps> = ({ data, onShowLogin }) => {
   const {
     header_title,
     header_subtitle,
@@ -82,20 +83,30 @@ const Header: React.FC<HeaderProps> = ({ data }) => {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-400">
                 {header_cta_primary && (
-                  <a
-                    href={header_cta_primary_url || "#"}
+                  <button
+                    onClick={onShowLogin}
                     className="px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-xl transform cursor-pointer text-center"
                     style={{
                       backgroundColor: primaryColor,
                     }}
                   >
                     {header_cta_primary}
-                  </a>
+                  </button>
                 )}
 
                 {header_cta_secondary && (
-                  <a
-                    href={header_cta_secondary_url || "#"}
+                  <button
+                    onClick={() => {
+                      // You can handle secondary CTA differently if needed
+                      if (
+                        header_cta_secondary_url === "#login" &&
+                        onShowLogin
+                      ) {
+                        onShowLogin();
+                      } else if (header_cta_secondary_url) {
+                        window.location.href = header_cta_secondary_url;
+                      }
+                    }}
                     className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:scale-105 border-2 cursor-pointer text-center"
                     style={{
                       borderColor: primaryColor,
@@ -104,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({ data }) => {
                     }}
                   >
                     {header_cta_secondary}
-                  </a>
+                  </button>
                 )}
               </div>
 

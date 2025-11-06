@@ -11,7 +11,11 @@ import DynamicContentRenderer from "../components/landingpage/components/Dynamic
 import Testimonials from "../components/landingpage/components/Testimonials";
 import CTA from "../components/landingpage/components/CTA";
 
-const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  onShowLogin?: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ onShowLogin }) => {
   const [data, setData] = useState<LandingPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -159,7 +163,7 @@ const LandingPage: React.FC = () => {
       <GlassNavbar />
 
       {/* Header Section */}
-      <Header data={data} />
+      <Header data={data} onShowLogin={onShowLogin} />
 
       {/* Features Section - ALWAYS SHOW (now has sample content) */}
       <Features data={data} />
