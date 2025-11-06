@@ -1,92 +1,67 @@
 import React, { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 
 interface LoginFormProps {
   onToggleMode: () => void;
-  accentColor: string;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-  onToggleMode,
-  accentColor,
-}) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    login(email, password);
-  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Email Field */}
+    <form className="space-y-6">
       <div>
-        <label
-          className="block text-sm font-medium mb-2"
-          style={{ color: "var(--text-color)" }}
-        >
-          Email Address
+        <label style={{ color: "var(--text-color)" }} className="block mb-1">
+          Email
         </label>
         <input
           type="email"
+          className="w-full p-3 rounded-lg border"
+          style={{
+            background: "white",
+            color: "black",
+            borderColor: "var(--neutral-color)",
+          }}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg transition border focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent"
-          style={{
-            borderColor: "var(--neutral-color)",
-            backgroundColor: "var(--background-color)",
-            color: "var(--text-color)",
-          }}
-          placeholder="you@example.com"
-          required
         />
       </div>
 
-      {/* Password Field */}
       <div>
-        <label
-          className="block text-sm font-medium mb-2"
-          style={{ color: "var(--text-color)" }}
-        >
+        <label style={{ color: "var(--text-color)" }} className="block mb-1">
           Password
         </label>
         <input
           type="password"
+          className="w-full p-3 rounded-lg border"
+          style={{
+            background: "white",
+            color: "black",
+            borderColor: "var(--neutral-color)",
+          }}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg transition border focus:ring-2 focus:border-transparent"
-          style={{
-            borderColor: "var(--neutral-color)",
-            backgroundColor: "var(--background-color)",
-            color: "var(--text-color)",
-          }}
-          placeholder="••••••••"
-          required
         />
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
         className="w-full font-semibold py-3 rounded-lg transition transform hover:scale-105 shadow-lg"
-        style={{ color: accentColor }}
+        style={{
+          background: "var(--accent-color)",
+          color: "white",
+        }}
       >
         Sign In
       </button>
 
-      {/* Toggle */}
-      <p
-        className="text-center text-sm"
-        style={{ color: "var(--neutral-color)" }}
-      >
-        Don’t have an account?{" "}
+      <p className="text-center" style={{ color: "var(--neutral-color)" }}>
+        Don't have an account?{" "}
         <button
-          type="button"
           onClick={onToggleMode}
+          type="button"
+          style={{ color: "var(--accent-color)" }}
           className="font-medium"
-          style={{ color: accentColor }}
         >
           Sign up
         </button>

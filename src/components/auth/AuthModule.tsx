@@ -10,35 +10,35 @@ export const AuthModule: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center p-4"
       style={{
-        backgroundImage: `linear-gradient(to bottom right, var(--bg-start), var(--bg-end))`,
+        background: `linear-gradient(to bottom right, var(--primary-color), var(--secondary-color))`,
       }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+      <div
+        className="rounded-2xl shadow-2xl w-full max-w-md p-8"
+        style={{ backgroundColor: "var(--background-color)" }}
+      >
         <div className="text-center mb-8">
           <div
             className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{ background: "var(--icon-bg)" }}
+            style={{ background: "var(--primary-color)" }}
           >
-            <Globe className="w-8 h-8 text-white" />
+            <Globe className="w-8 h-8" style={{ color: "white" }} />
           </div>
 
           <h1
             className="text-3xl font-bold mb-2"
-            style={{ color: "var(--heading-color)" }}
+            style={{ color: "var(--text-color)" }}
           >
             Multi-Tenant CMS
           </h1>
 
-          <p style={{ color: "var(--text-muted)" }}>
+          <p style={{ color: "var(--neutral-color)" }}>
             Deploy your website in seconds
           </p>
         </div>
 
         {isLoginMode ? (
-          <LoginForm
-            onToggleMode={() => setIsLoginMode(false)}
-            accentColor="var(--accent-orange)"
-          />
+          <LoginForm onToggleMode={() => setIsLoginMode(false)} />
         ) : (
           <SignupForm onToggleMode={() => setIsLoginMode(true)} />
         )}
