@@ -1,28 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
-
-interface NavLink {
-  label: string;
-  href: string;
-}
+import type { LandingPageData } from "../../../types/landing";
 
 interface GlassNavbarProps {
-  brand?: React.ReactNode;
-  links?: NavLink[];
-  primaryCta?: { label: string; href: string } | null;
+  data: LandingPageData;
+  onShowLogin?: () => void;
 }
 
-export default function GlassNavbar({
-  brand = <span className="font-bold text-xl">Tax Specialist</span>,
-  links = [
+function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
+  const [open, setOpen] = useState(false);
+
+  const { header_cta_primary, header_cta_primary_url, color_theme } = data;
+
+  const primaryColor = color_theme?.primary_color || "#3B82F6";
+
+  // Default links - you can customize these or get them from data if available
+  const links = [
     { label: "Home", href: "#" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
     { label: "Contact", href: "#contact" },
-  ],
-  primaryCta = { label: "Get Started", href: "#" },
-}: GlassNavbarProps) {
-  const [open, setOpen] = useState(false);
+  ];
 
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,8 +29,10 @@ export default function GlassNavbar({
         <div className="backdrop-blur-md bg-white/30 dark:bg-gray-900/30 border border-white/10 dark:border-gray-800/30 rounded-2xl shadow-lg p-2 md:p-3 flex items-center justify-between">
           {/* Left: Brand */}
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-[#F4A261] text-white">
-              {/* simple logo circle */}
+            <div
+              className="h-10 w-10 flex items-center justify-center rounded-lg text-white"
+              style={{ backgroundColor: primaryColor }}
+            >
               <svg
                 width="22"
                 height="22"
@@ -57,8 +57,8 @@ export default function GlassNavbar({
                 />
               </svg>
             </div>
-            <div className="hidden sm:block text-slate-900 dark:text-[#F4A261] font-semibold text-lg">
-              {brand}
+            <div className="hidden sm:block text-slate-900 dark:text-white font-semibold text-lg">
+              {data.title || "Tax Specialist"}
             </div>
           </div>
 
@@ -77,13 +77,30 @@ export default function GlassNavbar({
 
           {/* Right: CTA + Mobile button */}
           <div className="flex items-center gap-3">
-            {primaryCta && (
-              <a
-                href={primaryCta.href}
-                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                {primaryCta.label}
-              </a>
+            {header_cta_primary && (
+              <>
+                {header_cta_primary_url ? (
+                  <a
+                    href={header_cta_primary_url}
+                    className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
+                    style={{
+                      backgroundColor: primaryColor,
+                    }}
+                  >
+                    {header_cta_primary}
+                  </a>
+                ) : (
+                  <button
+                    onClick={onShowLogin}
+                    className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
+                    style={{
+                      backgroundColor: primaryColor,
+                    }}
+                  >
+                    {header_cta_primary}
+                  </button>
+                )}
+              </>
             )}
 
             {/* Mobile Hamburger */}
@@ -115,14 +132,36 @@ export default function GlassNavbar({
               </a>
             ))}
 
-            {primaryCta && (
-              <a
-                href={primaryCta.href}
-                className="mt-2 inline-block px-4 py-2 rounded-lg bg-[#F4A261]  text-white font-semibold text-center shadow-md"
-                onClick={() => setOpen(false)}
-              >
-                {primaryCta.label}
-              </a>
+            {header_cta_primary && (
+              <>
+                {header_cta_primary_url ? (
+                  <a
+                    href={header_cta_primary_url}
+                    className="mt-2 inline-block px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
+                    style={{
+                      backgroundColor: primaryColor,
+                    }}
+                    onClick={() => setOpen(false)}
+                  >
+                    {header_cta_primary}
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (onShowLogin) {
+                        onShowLogin();
+                        setOpen(false);
+                      }
+                    }}
+                    className="mt-2 inline-block px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
+                    style={{
+                      backgroundColor: primaryColor,
+                    }}
+                  >
+                    {header_cta_primary}
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -130,8 +169,15 @@ export default function GlassNavbar({
 
       {/* Decorative gradient and blur under the nav for depth */}
       <div className="pointer-events-none absolute inset-x-0 top-full mt-4 flex justify-center">
-        <div className="w-56 h-2 rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 opacity-30 blur-sm"></div>
+        <div
+          className="w-56 h-2 rounded-full opacity-30 blur-sm"
+          style={{
+            backgroundColor: primaryColor,
+          }}
+        ></div>
       </div>
     </nav>
   );
 }
+
+export default GlassNavbar;

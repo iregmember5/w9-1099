@@ -160,7 +160,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onShowLogin }) => {
       )}
 
       {/* Navbar Section */}
-      <GlassNavbar />
+      <GlassNavbar data={data} onShowLogin={onShowLogin} />
 
       {/* Header Section */}
       <Header data={data} onShowLogin={onShowLogin} />
