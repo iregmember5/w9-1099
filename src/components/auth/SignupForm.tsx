@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { isValidEmail } from "../../utils/validation";
+import type { ColorTheme } from "../../types/landing";
 
 interface SignupFormProps {
   onToggleMode: () => void;
+  colorTheme: ColorTheme;
 }
 
 interface SignupFormData {
@@ -24,7 +26,10 @@ interface SignupFormErrors {
   acceptTerms?: string;
 }
 
-export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
+export const SignupForm: React.FC<SignupFormProps> = ({
+  onToggleMode,
+  colorTheme,
+}) => {
   const [formData, setFormData] = useState<SignupFormData>({
     firstName: "",
     lastName: "",
@@ -34,7 +39,6 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
     acceptTerms: false,
   });
   const [errors, setErrors] = useState<SignupFormErrors>({});
-
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
@@ -46,7 +50,6 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Clear errors when user starts typing
     if (errors[name as keyof SignupFormData]) {
       setErrors((prev) => ({
         ...prev,
@@ -105,24 +108,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
     }
 
     setIsLoading(true);
-    console.log("Current form data:", formData);
-    console.log("firstName:", formData.firstName);
-    console.log("lastName:", formData.lastName);
-    console.log("email:", formData.email);
-    console.log("password:", formData.password);
-    console.log("confirmPassword:", formData.confirmPassword);
     try {
-      console.log("🔧 Debug - Form data before sending:", formData); // Debug log
-
-      // Call the actual signup API with all required data
       await signup({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
         confirmPassword: formData.confirmPassword,
-        companyName: "", // Optional field
-        phoneNumber: "", // Optional field
+        companyName: "",
+        phoneNumber: "",
         acceptTerms: formData.acceptTerms,
       });
     } catch (error: any) {
@@ -136,24 +130,29 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* API Error Display */}
       {apiError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div
+          className="border rounded-lg p-4"
+          style={{
+            backgroundColor: "#FEF2F2",
+            borderColor: "#FCA5A5",
+          }}
+        >
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <svg
-                className="h-5 w-5 text-red-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{apiError}</p>
-            </div>
+            <svg
+              className="h-5 w-5 flex-shrink-0"
+              style={{ color: "#EF4444" }}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="ml-3 text-sm" style={{ color: "#991B1B" }}>
+              {apiError}
+            </p>
           </div>
         </div>
       )}
@@ -162,7 +161,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
         <div>
           <label
             htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium mb-1"
+            style={{ color: colorTheme.text_color }}
           >
             First Name *
           </label>
@@ -173,20 +173,28 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
             value={formData.firstName}
             onChange={handleChange}
             disabled={isLoading}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-              errors.firstName ? "border-red-500" : "border-gray-300"
-            }`}
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition"
+            style={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderColor: errors.firstName
+                ? "#EF4444"
+                : colorTheme.neutral_color,
+            }}
             placeholder="John"
           />
           {errors.firstName && (
-            <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+            <p className="mt-1 text-sm" style={{ color: "#EF4444" }}>
+              {errors.firstName}
+            </p>
           )}
         </div>
 
         <div>
           <label
             htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium mb-1"
+            style={{ color: colorTheme.text_color }}
           >
             Last Name *
           </label>
@@ -197,13 +205,20 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
             value={formData.lastName}
             onChange={handleChange}
             disabled={isLoading}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-              errors.lastName ? "border-red-500" : "border-gray-300"
-            }`}
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition"
+            style={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderColor: errors.lastName
+                ? "#EF4444"
+                : colorTheme.neutral_color,
+            }}
             placeholder="Doe"
           />
           {errors.lastName && (
-            <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+            <p className="mt-1 text-sm" style={{ color: "#EF4444" }}>
+              {errors.lastName}
+            </p>
           )}
         </div>
       </div>
@@ -211,7 +226,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
+          style={{ color: colorTheme.text_color }}
         >
           Email *
         </label>
@@ -222,20 +238,26 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
           value={formData.email}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          }`}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition"
+          style={{
+            backgroundColor: "#FFFFFF",
+            color: "#000000",
+            borderColor: errors.email ? "#EF4444" : colorTheme.neutral_color,
+          }}
           placeholder="john@company.com"
         />
         {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+          <p className="mt-1 text-sm" style={{ color: "#EF4444" }}>
+            {errors.email}
+          </p>
         )}
       </div>
 
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
+          style={{ color: colorTheme.text_color }}
         >
           Password *
         </label>
@@ -246,15 +268,20 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
           value={formData.password}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.password ? "border-red-500" : "border-gray-300"
-          }`}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition"
+          style={{
+            backgroundColor: "#FFFFFF",
+            color: "#000000",
+            borderColor: errors.password ? "#EF4444" : colorTheme.neutral_color,
+          }}
           placeholder="••••••••"
         />
         {errors.password && (
-          <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+          <p className="mt-1 text-sm" style={{ color: "#EF4444" }}>
+            {errors.password}
+          </p>
         )}
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs" style={{ color: colorTheme.neutral_color }}>
           Must be at least 8 characters with uppercase, lowercase, and number
         </p>
       </div>
@@ -262,7 +289,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
       <div>
         <label
           htmlFor="confirmPassword"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
+          style={{ color: colorTheme.text_color }}
         >
           Confirm Password *
         </label>
@@ -273,13 +301,20 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
           value={formData.confirmPassword}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.confirmPassword ? "border-red-500" : "border-gray-300"
-          }`}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition"
+          style={{
+            backgroundColor: "#FFFFFF",
+            color: "#000000",
+            borderColor: errors.confirmPassword
+              ? "#EF4444"
+              : colorTheme.neutral_color,
+          }}
           placeholder="••••••••"
         />
         {errors.confirmPassword && (
-          <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+          <p className="mt-1 text-sm" style={{ color: "#EF4444" }}>
+            {errors.confirmPassword}
+          </p>
         )}
       </div>
 
@@ -291,20 +326,30 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
           checked={formData.acceptTerms}
           onChange={handleChange}
           disabled={isLoading}
-          className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          className="mt-1 w-4 h-4 rounded border focus:ring-2"
+          style={{
+            accentColor: colorTheme.accent_color,
+            borderColor: colorTheme.neutral_color,
+          }}
         />
-        <label htmlFor="acceptTerms" className="text-sm text-gray-700">
+        <label
+          htmlFor="acceptTerms"
+          className="text-sm"
+          style={{ color: colorTheme.text_color }}
+        >
           I agree to the{" "}
           <a
             href="#"
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            className="font-medium hover:underline"
+            style={{ color: colorTheme.accent_color }}
           >
             Terms of Service
           </a>{" "}
           and{" "}
           <a
             href="#"
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            className="font-medium hover:underline"
+            style={{ color: colorTheme.accent_color }}
           >
             Privacy Policy
           </a>
@@ -312,13 +357,19 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
         </label>
       </div>
       {errors.acceptTerms && (
-        <p className="text-sm text-red-600">{errors.acceptTerms}</p>
+        <p className="text-sm" style={{ color: "#EF4444" }}>
+          {errors.acceptTerms}
+        </p>
       )}
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+        className="w-full font-semibold py-3 rounded-lg transition transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+        style={{
+          background: `linear-gradient(135deg, ${colorTheme.primary_color}, ${colorTheme.accent_color})`,
+          color: "#FFFFFF",
+        }}
       >
         {isLoading ? (
           <>
@@ -330,13 +381,17 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
         )}
       </button>
 
-      <div className="text-center pt-4 border-t border-gray-200">
-        <p className="text-sm text-gray-600">
+      <div
+        className="text-center pt-4 border-t"
+        style={{ borderColor: colorTheme.neutral_color + "30" }}
+      >
+        <p className="text-sm" style={{ color: colorTheme.neutral_color }}>
           Already have an account?{" "}
           <button
             type="button"
             onClick={onToggleMode}
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            className="font-medium hover:underline"
+            style={{ color: colorTheme.accent_color }}
             disabled={isLoading}
           >
             Sign in

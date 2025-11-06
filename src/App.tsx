@@ -10,6 +10,7 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
 
   if (!isAuthenticated) {
+    // AuthModule will fetch color theme automatically
     return <AuthModule />;
   }
 
