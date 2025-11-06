@@ -3,9 +3,13 @@ import { useAuth } from "../../hooks/useAuth";
 
 interface LoginFormProps {
   onToggleMode: () => void;
+  accentColor: string;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({
+  onToggleMode,
+  accentColor,
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
@@ -67,10 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
       <button
         type="submit"
         className="w-full font-semibold py-3 rounded-lg transition transform hover:scale-105 shadow-lg"
-        style={{
-          background: "var(--primary-color)",
-          color: "white",
-        }}
+        style={{ color: accentColor }}
       >
         Sign In
       </button>
@@ -85,7 +86,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
           type="button"
           onClick={onToggleMode}
           className="font-medium"
-          style={{ color: "var(--primary-color)" }}
+          style={{ color: accentColor }}
         >
           Sign up
         </button>
