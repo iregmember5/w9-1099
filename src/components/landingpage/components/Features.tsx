@@ -1,5 +1,5 @@
 import React from "react";
-import type { LandingPageData, Feature } from "../types/landing";
+import type { LandingPageData, Feature } from "../../../types/landing";
 
 interface FeaturesProps {
   data: LandingPageData;

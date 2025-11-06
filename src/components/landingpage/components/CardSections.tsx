@@ -219,7 +219,7 @@
 // export default CardSections;
 
 import React from "react";
-import type { LandingPageData, CardContent } from "../types/landing";
+import type { LandingPageData, CardContent } from "../../../types/landing";
 
 interface CardSectionsProps {
   data: LandingPageData;

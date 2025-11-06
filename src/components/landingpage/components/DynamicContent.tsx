@@ -207,7 +207,7 @@
 // export default DynamicContentRenderer;
 
 import React from "react";
-import type { DynamicContentBlock } from "../types/landing";
+import type { DynamicContentBlock } from "../../../types/landing";
 
 const API_BASE_URL = "https://esign-admin.signmary.com";
 

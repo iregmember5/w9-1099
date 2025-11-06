@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { LandingPageData } from "../types/landing";
 import { fetchLandingPageData } from "../services/waigtail/landing";
 import GlassNavbar from "../components/landingpage/components/GlassNavbar";
-import { Header } from "../components/ui/Header";
+import Header from "../components/landingpage/components/Header";
 import Features from "../components/landingpage/components/Features";
 import VideoSection from "../components/landingpage/components/VideoSection";
 import Benefits from "../components/landingpage/components/Benefits";

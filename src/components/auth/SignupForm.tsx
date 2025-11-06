@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { isValidEmail } from '../../utils/validation';
+import React, { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { isValidEmail } from "../../utils/validation";
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -15,70 +15,81 @@ interface SignupFormData {
   acceptTerms: boolean;
 }
 
+interface SignupFormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  acceptTerms?: string;
+}
+
 export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
   const [formData, setFormData] = useState<SignupFormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    acceptTerms: false
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    acceptTerms: false,
   });
-  const [errors, setErrors] = useState<Partial<SignupFormData>>({});
-  const [apiError, setApiError] = useState('');
+  const [errors, setErrors] = useState<SignupFormErrors>({});
+
+  const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear errors when user starts typing
     if (errors[name as keyof SignupFormData]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        [name]: undefined,
       }));
     }
-    if (apiError) setApiError('');
+    if (apiError) setApiError("");
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<SignupFormData> = {};
+    const newErrors: SignupFormErrors = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = "First name is required";
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = "Last name is required";
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters long';
+      newErrors.password = "Password must be at least 8 characters long";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+      newErrors.password =
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     if (!formData.acceptTerms) {
-      newErrors.acceptTerms = 'You must accept the terms and conditions';
+      newErrors.acceptTerms = "You must accept the terms and conditions";
     }
 
     setErrors(newErrors);
@@ -87,22 +98,22 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onToggleMode }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError('');
-    
+    setApiError("");
+
     if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
-console.log('Current form data:', formData);
-  console.log('firstName:', formData.firstName);
-  console.log('lastName:', formData.lastName);
-  console.log('email:', formData.email);
-  console.log('password:', formData.password);
-  console.log('confirmPassword:', formData.confirmPassword);
+    console.log("Current form data:", formData);
+    console.log("firstName:", formData.firstName);
+    console.log("lastName:", formData.lastName);
+    console.log("email:", formData.email);
+    console.log("password:", formData.password);
+    console.log("confirmPassword:", formData.confirmPassword);
     try {
-      console.log('🔧 Debug - Form data before sending:', formData); // Debug log
-      
+      console.log("🔧 Debug - Form data before sending:", formData); // Debug log
+
       // Call the actual signup API with all required data
       await signup({
         firstName: formData.firstName,
@@ -110,13 +121,12 @@ console.log('Current form data:', formData);
         email: formData.email,
         password: formData.password,
         confirmPassword: formData.confirmPassword,
-        companyName: '', // Optional field
-        phoneNumber: '', // Optional field
-        acceptTerms: formData.acceptTerms
+        companyName: "", // Optional field
+        phoneNumber: "", // Optional field
+        acceptTerms: formData.acceptTerms,
       });
-      
     } catch (error: any) {
-      setApiError(error.message || 'Registration failed. Please try again.');
+      setApiError(error.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -129,8 +139,16 @@ console.log('Current form data:', formData);
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -142,7 +160,10 @@ console.log('Current form data:', formData);
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="firstName"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             First Name *
           </label>
           <input
@@ -153,7 +174,7 @@ console.log('Current form data:', formData);
             onChange={handleChange}
             disabled={isLoading}
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-              errors.firstName ? 'border-red-500' : 'border-gray-300'
+              errors.firstName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="John"
           />
@@ -163,7 +184,10 @@ console.log('Current form data:', formData);
         </div>
 
         <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="lastName"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Last Name *
           </label>
           <input
@@ -174,7 +198,7 @@ console.log('Current form data:', formData);
             onChange={handleChange}
             disabled={isLoading}
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-              errors.lastName ? 'border-red-500' : 'border-gray-300'
+              errors.lastName ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Doe"
           />
@@ -185,7 +209,10 @@ console.log('Current form data:', formData);
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Email *
         </label>
         <input
@@ -196,7 +223,7 @@ console.log('Current form data:', formData);
           onChange={handleChange}
           disabled={isLoading}
           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.email ? 'border-red-500' : 'border-gray-300'
+            errors.email ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="john@company.com"
         />
@@ -206,7 +233,10 @@ console.log('Current form data:', formData);
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Password *
         </label>
         <input
@@ -217,7 +247,7 @@ console.log('Current form data:', formData);
           onChange={handleChange}
           disabled={isLoading}
           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.password ? 'border-red-500' : 'border-gray-300'
+            errors.password ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="••••••••"
         />
@@ -230,7 +260,10 @@ console.log('Current form data:', formData);
       </div>
 
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="confirmPassword"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Confirm Password *
         </label>
         <input
@@ -241,7 +274,7 @@ console.log('Current form data:', formData);
           onChange={handleChange}
           disabled={isLoading}
           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+            errors.confirmPassword ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="••••••••"
         />
@@ -261,12 +294,18 @@ console.log('Current form data:', formData);
           className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
         />
         <label htmlFor="acceptTerms" className="text-sm text-gray-700">
-          I agree to the{' '}
-          <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
+          I agree to the{" "}
+          <a
+            href="#"
+            className="text-indigo-600 hover:text-indigo-700 font-medium"
+          >
             Terms of Service
-          </a>{' '}
-          and{' '}
-          <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
+          </a>{" "}
+          and{" "}
+          <a
+            href="#"
+            className="text-indigo-600 hover:text-indigo-700 font-medium"
+          >
             Privacy Policy
           </a>
           *
@@ -293,7 +332,7 @@ console.log('Current form data:', formData);
 
       <div className="text-center pt-4 border-t border-gray-200">
         <p className="text-sm text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <button
             type="button"
             onClick={onToggleMode}

@@ -1,5 +1,5 @@
 import React from "react";
-import type { LandingPageData } from "../types/landing";
+import type { LandingPageData } from "../../../types/landing";
 
 interface CTAProps {
   data: LandingPageData;

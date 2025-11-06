@@ -1,5 +1,5 @@
 import React from "react";
-import type { LandingPageData } from "../types/landing";
+import type { LandingPageData } from "../../../types/landing";
 
 interface HeaderProps {
   data: LandingPageData;

@@ -1,5 +1,5 @@
 import React from "react";
-import type { LandingPageData, Benefit } from "../types/landing";
+import type { LandingPageData, Benefit } from "../../../types/landing";
 
 interface BenefitsProps {
   data: LandingPageData;

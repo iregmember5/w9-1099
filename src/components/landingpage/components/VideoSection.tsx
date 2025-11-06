@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { LandingPageData, Video } from "../types/landing";
+import type { LandingPageData, Video } from "../../../types/landing";
 
 interface VideoSectionProps {
   data: LandingPageData;
