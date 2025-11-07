@@ -10,6 +10,7 @@ import CardSections from "../components/landingpage/components/CardSections";
 import DynamicContentRenderer from "../components/landingpage/components/DynamicContent";
 import Testimonials from "../components/landingpage/components/Testimonials";
 import CTA from "../components/landingpage/components/CTA";
+import Footer from "../components/landingpage/components/Footer";
 
 interface LandingPageProps {
   onShowLogin?: () => void;
@@ -209,33 +210,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onShowLogin }) => {
       )}
 
       {/* Footer */}
-      <footer
-        className="py-12 text-center border-t-2"
-        style={{
-          backgroundColor:
-            data.color_theme?.background_color === "#6B7280"
-              ? "#FFFFFF"
-              : data.color_theme?.background_color || "#FFFFFF",
-          borderColor: data.color_theme?.neutral_color + "30" || "#6B728030",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          <p
-            className="text-lg"
-            style={{ color: data.color_theme?.neutral_color || "#6B7280" }}
-          >
-            © {new Date().getFullYear()} {data.title}. All rights reserved.
-          </p>
-          {data.allowed_frontends && data.allowed_frontends.length > 0 && (
-            <p
-              className="mt-2 text-sm"
-              style={{ color: data.color_theme?.neutral_color || "#6B7280" }}
-            >
-              Powered by Dynamic CMS
-            </p>
-          )}
-        </div>
-      </footer>
+      <Footer data={data} />
     </div>
   );
 };

@@ -9,61 +9,99 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import type { LandingPageData } from "../../../types/landing";
+import type { LandingPageData, Section } from "../../../types/landing";
 
 interface FooterProps {
   data: LandingPageData;
 }
 
 function Footer({ data }: FooterProps) {
-  const footerConfig = data.footer_config;
+  // Try to get footer config from multiple possible locations
+  const footerSection = data.sections?.find(
+    (section: Section) => section.type === "footer"
+  );
+  const footerConfig = data.footer_config || footerSection?.data;
 
+  // If no footer config found, return null
   if (!footerConfig) {
+    console.log("No footer config found in data:", data);
     return null;
   }
 
   const primaryColor = data.color_theme?.primary_color || "#3B82F6";
-  //   const textColor = data.color_theme?.text_color || "#1F2937";
+  const textColor = data.color_theme?.text_color || "#1F2937";
+  const backgroundColor = data.color_theme?.background_color || "#1E293B";
 
-  // Social media links configuration
+  // Debug log to see what we're working with
+  console.log("Footer config:", footerConfig);
+  console.log("Color theme:", data.color_theme);
+
+  // Social media links configuration - handle both data structures
   const socialLinks = [
     {
       icon: Facebook,
-      url: footerConfig.social_links?.facebook,
+      url: footerConfig.social_links?.facebook || footerConfig.facebook_url,
       label: "Facebook",
     },
     {
       icon: Twitter,
-      url: footerConfig.social_links?.twitter,
+      url: footerConfig.social_links?.twitter || footerConfig.twitter_url,
       label: "Twitter",
     },
     {
       icon: Linkedin,
-      url: footerConfig.social_links?.linkedin,
+      url: footerConfig.social_links?.linkedin || footerConfig.linkedin_url,
       label: "LinkedIn",
     },
     {
       icon: Instagram,
-      url: footerConfig.social_links?.instagram,
+      url: footerConfig.social_links?.instagram || footerConfig.instagram_url,
       label: "Instagram",
     },
     {
       icon: Youtube,
-      url: footerConfig.social_links?.youtube,
+      url: footerConfig.social_links?.youtube || footerConfig.youtube_url,
       label: "YouTube",
     },
   ].filter((link) => link.url);
 
+  // Handle sections data structure
+  const sections = {
+    quick_links:
+      footerConfig.sections?.quick_links || footerConfig.show_quick_links,
+    services: footerConfig.sections?.services || footerConfig.show_services,
+    contact: footerConfig.sections?.contact || footerConfig.show_contact,
+  };
+
+  // Handle company info
+  const companyInfo = footerConfig.company_info || {
+    description: footerConfig.company_description,
+    logo: footerConfig.logo,
+  };
+
+  // Handle contact info
+  const contactInfo = footerConfig.contact_info || {
+    address: footerConfig.address,
+    phone: footerConfig.phone,
+    email: footerConfig.email,
+  };
+
+  // Apply dynamic theming
+  const footerStyle = {
+    backgroundColor: backgroundColor,
+    color: textColor,
+  } as React.CSSProperties;
+
   return (
-    <footer className="bg-slate-900 text-slate-300">
+    <footer style={footerStyle} className="transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info Section */}
           <div className="space-y-4">
-            {footerConfig.company_info?.logo ? (
+            {companyInfo.logo ? (
               <img
-                src={footerConfig.company_info.logo.url}
-                alt={footerConfig.company_info.logo.title || "Company Logo"}
+                src={companyInfo.logo.url}
+                alt={companyInfo.logo.title || "Company Logo"}
                 className="h-12 w-auto"
               />
             ) : (
@@ -75,9 +113,9 @@ function Footer({ data }: FooterProps) {
               </div>
             )}
 
-            {footerConfig.company_info?.description && (
+            {companyInfo.description && (
               <p className="text-sm leading-relaxed">
-                {footerConfig.company_info.description}
+                {companyInfo.description}
               </p>
             )}
 
@@ -93,7 +131,7 @@ function Footer({ data }: FooterProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
+                      className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-all duration-300 hover:scale-110"
                       style={
                         {
                           "--hover-color": primaryColor,
@@ -101,12 +139,14 @@ function Footer({ data }: FooterProps) {
                       }
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = primaryColor;
+                        e.currentTarget.style.color = "#FFFFFF";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "";
+                        e.currentTarget.style.color = textColor;
                       }}
                     >
-                      <Icon size={18} />
+                      <Icon size={18} style={{ color: "inherit" }} />
                     </a>
                   );
                 })}
@@ -115,7 +155,7 @@ function Footer({ data }: FooterProps) {
           </div>
 
           {/* Quick Links Section */}
-          {footerConfig.sections?.quick_links && (
+          {sections.quick_links && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
                 Quick Links
@@ -166,7 +206,7 @@ function Footer({ data }: FooterProps) {
           )}
 
           {/* Services Section */}
-          {footerConfig.sections?.services && (
+          {sections.services && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
                 Services
@@ -217,25 +257,23 @@ function Footer({ data }: FooterProps) {
           )}
 
           {/* Contact Section */}
-          {footerConfig.sections?.contact && (
+          {sections.contact && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
                 Contact Us
               </h3>
               <ul className="space-y-3">
-                {footerConfig.contact_info?.address && (
+                {contactInfo.address && (
                   <li className="flex items-start gap-3">
                     <MapPin
                       size={18}
                       className="mt-0.5 flex-shrink-0"
                       style={{ color: primaryColor }}
                     />
-                    <span className="text-sm">
-                      {footerConfig.contact_info.address}
-                    </span>
+                    <span className="text-sm">{contactInfo.address}</span>
                   </li>
                 )}
-                {footerConfig.contact_info?.phone && (
+                {contactInfo.phone && (
                   <li className="flex items-center gap-3">
                     <Phone
                       size={18}
@@ -243,14 +281,14 @@ function Footer({ data }: FooterProps) {
                       style={{ color: primaryColor }}
                     />
                     <a
-                      href={`tel:${footerConfig.contact_info.phone}`}
+                      href={`tel:${contactInfo.phone}`}
                       className="text-sm hover:text-white transition-colors"
                     >
-                      {footerConfig.contact_info.phone}
+                      {contactInfo.phone}
                     </a>
                   </li>
                 )}
-                {footerConfig.contact_info?.email && (
+                {contactInfo.email && (
                   <li className="flex items-center gap-3">
                     <Mail
                       size={18}
@@ -258,10 +296,10 @@ function Footer({ data }: FooterProps) {
                       style={{ color: primaryColor }}
                     />
                     <a
-                      href={`mailto:${footerConfig.contact_info.email}`}
+                      href={`mailto:${contactInfo.email}`}
                       className="text-sm hover:text-white transition-colors"
                     >
-                      {footerConfig.contact_info.email}
+                      {contactInfo.email}
                     </a>
                   </li>
                 )}

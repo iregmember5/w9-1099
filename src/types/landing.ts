@@ -145,9 +145,17 @@ export interface HeaderConfig {
   sticky_navbar: boolean;
   transparent_on_home: boolean;
 }
+
+// Update your LandingPageData interface
+export interface Section {
+  type: string;
+  data: any;
+}
+
 export interface LandingPageData {
   header_config?: HeaderConfig;
   footer_config?: FooterConfig;
+  sections?: Section[];
   header_section_image: any;
   id: number;
   title: string;
