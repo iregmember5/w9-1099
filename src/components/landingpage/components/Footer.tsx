@@ -34,7 +34,6 @@ function Footer({ data }: FooterProps) {
 
   // Debug log to see what we're working with
   console.log("Footer config:", footerConfig);
-  console.log("Color theme:", data.color_theme);
 
   // Social media links configuration - handle both data structures
   const socialLinks = [
@@ -65,25 +64,44 @@ function Footer({ data }: FooterProps) {
     },
   ].filter((link) => link.url);
 
-  // Handle sections data structure
+  // Handle sections data structure - check both possible field names
   const sections = {
     quick_links:
-      footerConfig.sections?.quick_links || footerConfig.show_quick_links,
-    services: footerConfig.sections?.services || footerConfig.show_services,
-    contact: footerConfig.sections?.contact || footerConfig.show_contact,
+      footerConfig.sections?.quick_links !== undefined
+        ? footerConfig.sections.quick_links
+        : footerConfig.show_quick_links !== undefined
+        ? footerConfig.show_quick_links
+        : true, // default to true if not specified
+
+    services:
+      footerConfig.sections?.services !== undefined
+        ? footerConfig.sections.services
+        : footerConfig.show_services !== undefined
+        ? footerConfig.show_services
+        : true, // default to true if not specified
+
+    contact:
+      footerConfig.sections?.contact !== undefined
+        ? footerConfig.sections.contact
+        : footerConfig.show_contact !== undefined
+        ? footerConfig.show_contact
+        : true, // default to true if not specified
   };
 
-  // Handle company info
-  const companyInfo = footerConfig.company_info || {
-    description: footerConfig.company_description,
-    logo: footerConfig.logo,
+  // Handle company info - check both possible field structures
+  const companyInfo = {
+    description:
+      footerConfig.company_info?.description ||
+      footerConfig.company_description ||
+      "",
+    logo: footerConfig.company_info?.logo || footerConfig.logo,
   };
 
-  // Handle contact info
-  const contactInfo = footerConfig.contact_info || {
-    address: footerConfig.address,
-    phone: footerConfig.phone,
-    email: footerConfig.email,
+  // Handle contact info - check both possible field structures
+  const contactInfo = {
+    address: footerConfig.contact_info?.address || footerConfig.address || "",
+    phone: footerConfig.contact_info?.phone || footerConfig.phone || "",
+    email: footerConfig.contact_info?.email || footerConfig.email || "",
   };
 
   // Apply dynamic theming
@@ -96,7 +114,7 @@ function Footer({ data }: FooterProps) {
     <footer style={footerStyle} className="transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Company Info Section */}
+          {/* Company Info Section - ALWAYS SHOW */}
           <div className="space-y-4">
             {companyInfo.logo ? (
               <img
@@ -119,7 +137,7 @@ function Footer({ data }: FooterProps) {
               </p>
             )}
 
-            {/* Social Links */}
+            {/* Social Links - ALWAYS SHOW IF LINKS EXIST */}
             {socialLinks.length > 0 && (
               <div className="flex gap-3 mt-4">
                 {socialLinks.map((social, idx) => {
@@ -154,7 +172,7 @@ function Footer({ data }: FooterProps) {
             )}
           </div>
 
-          {/* Quick Links Section */}
+          {/* Quick Links Section - DYNAMICALLY SHOW/HIDE */}
           {sections.quick_links && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
@@ -205,7 +223,7 @@ function Footer({ data }: FooterProps) {
             </div>
           )}
 
-          {/* Services Section */}
+          {/* Services Section - DYNAMICALLY SHOW/HIDE */}
           {sections.services && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
@@ -256,7 +274,7 @@ function Footer({ data }: FooterProps) {
             </div>
           )}
 
-          {/* Contact Section */}
+          {/* Contact Section - DYNAMICALLY SHOW/HIDE */}
           {sections.contact && (
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
@@ -270,7 +288,9 @@ function Footer({ data }: FooterProps) {
                       className="mt-0.5 flex-shrink-0"
                       style={{ color: primaryColor }}
                     />
-                    <span className="text-sm">{contactInfo.address}</span>
+                    <span className="text-sm whitespace-pre-line">
+                      {contactInfo.address}
+                    </span>
                   </li>
                 )}
                 {contactInfo.phone && (
@@ -281,7 +301,7 @@ function Footer({ data }: FooterProps) {
                       style={{ color: primaryColor }}
                     />
                     <a
-                      href={`tel:${contactInfo.phone}`}
+                      href={`tel:${contactInfo.phone.replace(/\D/g, "")}`}
                       className="text-sm hover:text-white transition-colors"
                     >
                       {contactInfo.phone}
@@ -308,9 +328,10 @@ function Footer({ data }: FooterProps) {
           )}
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar - ALWAYS SHOW */}
         <div className="pt-8 mt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* DYNAMIC COPYRIGHT TEXT */}
             <p className="text-sm text-slate-400 text-center md:text-left">
               {footerConfig.copyright_text ||
                 `© ${new Date().getFullYear()} ${
@@ -318,6 +339,7 @@ function Footer({ data }: FooterProps) {
                 }. All rights reserved.`}
             </p>
 
+            {/* Policy Links - Currently Hardcoded (can be made dynamic later) */}
             <div className="flex gap-6 text-sm">
               <a
                 href="#privacy"
