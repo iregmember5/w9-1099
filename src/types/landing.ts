@@ -84,8 +84,70 @@ export interface FrontendSite {
   url: string;
   is_active: boolean;
 }
+export interface FooterConfig {
+  id: number;
+  name: string;
+  company_info?: {
+    description?: string;
+    logo?: {
+      id: number;
+      url: string;
+      title: string;
+    };
+  };
+  contact_info?: {
+    address?: string;
+    phone?: string;
+    email?: string;
+  };
+  social_links?: {
+    facebook?: string;
+    twitter?: string;
+    linkedin?: string;
+    instagram?: string;
+    youtube?: string;
+  };
+  sections?: {
+    quick_links?: boolean;
+    services?: boolean;
+    contact?: boolean;
+  };
+  copyright_text?: string;
+}
 
+export interface NavigationItem {
+  id: number;
+  title: string;
+  url: string;
+  link_type: "page" | "url" | "dropdown";
+  order: number;
+  children?: NavigationItem[];
+}
+
+export interface HeaderConfig {
+  id: number;
+  name: string;
+  logo?: {
+    id: number;
+    url: string;
+    title: string;
+    width: number;
+    height: number;
+  };
+  site_name?: string;
+  navbar_style: string;
+  navigation_items?: NavigationItem[];
+  navbar_cta?: {
+    text: string;
+    url: string;
+    style: string;
+  };
+  sticky_navbar: boolean;
+  transparent_on_home: boolean;
+}
 export interface LandingPageData {
+  header_config?: HeaderConfig;
+  footer_config?: FooterConfig;
   header_section_image: any;
   id: number;
   title: string;
