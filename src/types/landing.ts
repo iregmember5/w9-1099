@@ -152,6 +152,15 @@ export interface Section {
   data: any;
 }
 
+export interface FAQItem {
+  id: number;
+  question: string;
+  answer: string;
+  category?: string;
+  order: number;
+  is_active: boolean;
+}
+
 export interface LandingPageData {
   header_config?: HeaderConfig;
   footer_config?: FooterConfig;
@@ -195,6 +204,14 @@ export interface LandingPageData {
   testimonials_head?: string;
   testimonials_introduction?: string;
   testimonials?: Testimonial[];
+
+  faq_section?: {
+    heading: string;
+    introduction: string;
+    items: FAQItem[];
+  };
+
+  faqs?: FAQItem[];
 
   // CTA Section
   cta_head?: string;

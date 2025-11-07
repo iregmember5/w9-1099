@@ -11,6 +11,7 @@ import DynamicContentRenderer from "../components/landingpage/components/Dynamic
 import Testimonials from "../components/landingpage/components/Testimonials";
 import CTA from "../components/landingpage/components/CTA";
 import Footer from "../components/landingpage/components/Footer";
+import FAQ from "../components/landingpage/components/FAQ";
 
 interface LandingPageProps {
   onShowLogin?: () => void;
@@ -203,6 +204,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onShowLogin }) => {
 
       {/* Testimonials Section - ALWAYS SHOW (now has sample content) */}
       <Testimonials data={data} />
+
+      <FAQ data={data} />
 
       {/* CTA Section */}
       {(data.cta_head || data.cta_introduction || data.cta_primary_text) && (
