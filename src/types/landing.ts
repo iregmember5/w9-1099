@@ -161,6 +161,12 @@ export interface FAQItem {
   is_active: boolean;
 }
 
+export interface FAQSection {
+  heading: string;
+  introduction: string;
+  faqs: FAQItem[];
+}
+
 export interface LandingPageData {
   header_config?: HeaderConfig;
   footer_config?: FooterConfig;
@@ -205,11 +211,7 @@ export interface LandingPageData {
   testimonials_introduction?: string;
   testimonials?: Testimonial[];
 
-  faq_section?: {
-    heading: string;
-    introduction: string;
-    items: FAQItem[];
-  };
+  faq_section?: FAQSection;
 
   faqs?: FAQItem[];
 
