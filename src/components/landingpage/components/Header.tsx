@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ data, onShowLogin }) => {
     header_cta_primary_url,
     header_cta_secondary,
     header_cta_secondary_url,
-    header_image, // New prop for the right side image
+    header_section_image, // New prop for the right side image
     color_theme,
   } = data;
 
@@ -31,10 +31,10 @@ const Header: React.FC<HeaderProps> = ({ data, onShowLogin }) => {
     : null;
 
   // Use header_image for the right side section
-  const rightImageUrl = header_image?.url?.startsWith("http")
-    ? header_image.url
-    : header_image?.url
-    ? `${backendBaseUrl}${header_image.url}`
+  const rightImageUrl = header_section_image?.url?.startsWith("http")
+    ? header_section_image.url
+    : header_section_image?.url
+    ? `${backendBaseUrl}${header_section_image.url}`
     : null;
 
   return (

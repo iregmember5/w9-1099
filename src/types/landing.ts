@@ -86,7 +86,7 @@ export interface FrontendSite {
 }
 
 export interface LandingPageData {
-  header_image: any;
+  header_section_image: any;
   id: number;
   title: string;
   meta: {
