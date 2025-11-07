@@ -23,7 +23,7 @@ function Footer({ data }: FooterProps) {
   }
 
   const primaryColor = data.color_theme?.primary_color || "#3B82F6";
-  const textColor = data.color_theme?.text_color || "#1F2937";
+  //   const textColor = data.color_theme?.text_color || "#1F2937";
 
   // Social media links configuration
   const socialLinks = [
