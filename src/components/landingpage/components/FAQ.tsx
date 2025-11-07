@@ -12,37 +12,52 @@ interface FAQItem {
   answer: string;
   category?: string;
   order: number;
-  is_active: boolean;
+  is_active?: boolean;
 }
 
 const FAQ: React.FC<FAQProps> = ({ data }) => {
-  // Extract FAQ data from the landing page data structure
-  const faqData = data.sections?.find(
-    (section) => section.type === "faq"
-  )?.data;
+  console.log("🔍 FAQ Component - Full Data:", data);
+  console.log("🔍 FAQ Section Data:", data.faq_section);
+  console.log("🔍 FAQ Items:", data.faq_section?.faqs);
 
-  const heading =
-    faqData?.heading ||
-    data.faq_section?.heading ||
-    "Frequently Asked Questions";
-  const introduction =
-    faqData?.introduction || data.faq_section?.introduction || "";
-  const faqItems: FAQItem[] = faqData?.items || data.faqs || [];
+  // Extract FAQ data directly from the API structure
+  const faqSection = data.faq_section;
+
+  const heading = faqSection?.heading || "Frequently Asked Questions";
+  const introduction = faqSection?.introduction || "";
+  const faqItems: FAQItem[] = faqSection?.faqs || [];
+
+  console.log("🔍 Processed FAQ Data:", {
+    heading,
+    introduction,
+    faqItemsCount: faqItems.length,
+    faqItems,
+  });
 
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
+  // Check if we have FAQ items to display
   if (!faqItems || faqItems.length === 0) {
+    console.log("❌ No FAQ items found, returning null");
     return null;
   }
+
+  console.log("✅ FAQ items found, rendering component");
 
   // Extract unique categories
   const categories = [
     "all",
     ...new Set(
-      faqItems.map((item) => item.category).filter(Boolean) as string[]
+      faqItems
+        .map((item) => item.category)
+        .filter((category): category is string =>
+          Boolean(category && category.trim() !== "")
+        )
     ),
   ];
+
+  console.log("📂 Categories:", categories);
 
   // Filter FAQs by category
   const filteredFaqs =
@@ -71,7 +86,6 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
   // Get theme colors with fallbacks
   const primaryColor = data.color_theme?.primary_color || "#3b82f6";
   const secondaryColor = data.color_theme?.secondary_color || "#1e40af";
-  //   const accentColor = data.color_theme?.accent_color || "#10b981";
   const neutralColor = data.color_theme?.neutral_color || "#6b7280";
   const backgroundColor = data.color_theme?.background_color || "#ffffff";
   const textColor = data.color_theme?.text_color || "#1f2937";
@@ -100,21 +114,22 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
           )}
         </div>
 
-        {/* Category Filter */}
-        {categories.length > 2 && (
+        {/* Category Filter - Only show if we have multiple categories */}
+        {categories.length > 1 && (
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  activeCategory === category
-                    ? "text-white shadow-lg"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  activeCategory === category ? "text-white" : "bg-opacity-20"
                 }`}
                 style={{
                   backgroundColor:
-                    activeCategory === category ? primaryColor : undefined,
+                    activeCategory === category
+                      ? primaryColor
+                      : `${primaryColor}20`,
+                  color: activeCategory === category ? "white" : primaryColor,
                 }}
               >
                 {category === "all" ? "All Questions" : category}
@@ -124,17 +139,19 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
         )}
 
         {/* Expand/Collapse All */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleAll}
-            className="text-sm font-medium hover:underline transition-colors duration-200"
-            style={{ color: primaryColor }}
-          >
-            {openItems.size === filteredFaqs.length
-              ? "Collapse All"
-              : "Expand All"}
-          </button>
-        </div>
+        {filteredFaqs.length > 1 && (
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={toggleAll}
+              className="text-sm font-medium hover:underline transition-colors duration-200"
+              style={{ color: primaryColor }}
+            >
+              {openItems.size === filteredFaqs.length
+                ? "Collapse All"
+                : "Expand All"}
+            </button>
+          </div>
+        )}
 
         {/* FAQ Items */}
         <div className="space-y-4">
@@ -145,31 +162,22 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
               style={{
                 border: `1px solid ${neutralColor}`,
                 backgroundColor: openItems.has(faq.id)
-                  ? `${primaryColor}08` // 08 hex for very light opacity
+                  ? `${primaryColor}08`
                   : "transparent",
               }}
             >
               <button
                 onClick={() => toggleItem(faq.id)}
-                className="w-full text-left p-6 flex justify-between items-center rounded-xl transition-all duration-200 hover:bg-opacity-5"
+                className="w-full text-left p-6 flex justify-between items-center rounded-xl transition-all duration-200"
                 style={{
                   color: textColor,
-                  // Dynamic focus styles using your theme
                   outline: "none",
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.boxShadow = `0 0 0 2px ${primaryColor}40`; // 40 hex for opacity
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${primaryColor}40`;
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.boxShadow = "none";
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = `${primaryColor}08`;
-                }}
-                onMouseLeave={(e) => {
-                  if (!openItems.has(faq.id)) {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                  }
                 }}
               >
                 <h3
@@ -196,7 +204,7 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
               </button>
 
               <div
-                className={`px-6 transition-all duration-200 overflow-hidden ${
+                className={`px-6 transition-all duration-300 overflow-hidden ${
                   openItems.has(faq.id)
                     ? "pb-6 max-h-96 opacity-100"
                     : "max-h-0 opacity-0"
@@ -204,17 +212,17 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
               >
                 <div
                   className="prose prose-lg max-w-none"
-                  style={{ color: `${textColor}CC` }} // CC hex for 80% opacity
+                  style={{ color: textColor }}
                   dangerouslySetInnerHTML={{ __html: faq.answer }}
                 />
 
-                {/* Category badge */}
-                {faq.category && (
+                {/* Category badge - Only show if category exists and is not empty */}
+                {faq.category && faq.category.trim() !== "" && (
                   <div className="mt-4">
                     <span
                       className="inline-block px-3 py-1 text-xs font-medium rounded-full"
                       style={{
-                        backgroundColor: `${primaryColor}20`, // 20 hex for light background
+                        backgroundColor: `${primaryColor}20`,
                         color: primaryColor,
                       }}
                     >
@@ -226,28 +234,6 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
             </div>
           ))}
         </div>
-
-        {/* No results message */}
-        {filteredFaqs.length === 0 && (
-          <div className="text-center py-12">
-            <div
-              className="w-24 h-24 mx-auto mb-4 opacity-50"
-              style={{ color: neutralColor }}
-            >
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <p className="text-lg opacity-70" style={{ color: textColor }}>
-              No questions found in this category.
-            </p>
-          </div>
-        )}
 
         {/* Contact CTA */}
         <div
@@ -283,24 +269,6 @@ const FAQ: React.FC<FAQProps> = ({ data }) => {
           </button>
         </div>
       </div>
-
-      {/* Dynamic focus styles for all interactive elements */}
-      <style>{`
-        .category-filter button:focus {
-          outline: none;
-          box-shadow: 0 0 0 2px ${primaryColor}40;
-        }
-        
-        .expand-collapse-btn:focus {
-          outline: none;
-          text-decoration: underline;
-        }
-        
-        .contact-btn:focus {
-          outline: none;
-          box-shadow: 0 0 0 3px ${primaryColor}40;
-        }
-      `}</style>
     </section>
   );
 };
