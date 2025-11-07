@@ -24,6 +24,12 @@ const Header: React.FC<HeaderProps> = ({ data, onShowLogin }) => {
 
   const backendBaseUrl = "https://esign-admin.signmary.com";
 
+  const backgroundImageUrl = data.header_background_image?.url
+    ? data.header_background_image.url.startsWith("http")
+      ? data.header_background_image.url
+      : `${backendBaseUrl}${data.header_background_image.url}`
+    : null;
+
   // Use header_image for the right side section
   const rightImageUrl = header_image?.url?.startsWith("http")
     ? header_image.url
@@ -36,6 +42,9 @@ const Header: React.FC<HeaderProps> = ({ data, onShowLogin }) => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         backgroundColor: color_theme?.background_color || "#FFFFFF",
+        backgroundImage: backgroundImageUrl
+          ? `url(${backgroundImageUrl})`
+          : "none",
       }}
     >
       {/* Content Container */}
