@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useAuth } from "./hooks/useAuth";
 import { AuthModule } from "./components/auth/AuthModule";
-import { DeploymentOptions } from "./components/deployment/DeploymentOptions";
+import TaxFormModule from "./components/taxForms/TaxFormsModule";
 import "./index.css";
 import LandingPage from "./pages/LandingPage";
 
@@ -21,9 +21,7 @@ const AppContent: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Multi-Tenant CMS Dashboard
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900">W9 Setup</h1>
               <p className="text-sm text-gray-600 mt-1">
                 Welcome back, {user?.firstName} {user?.lastName}
               </p>
@@ -42,7 +40,7 @@ const AppContent: React.FC = () => {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white shadow-lg rounded-xl p-8">
-            <DeploymentOptions />
+            <TaxFormModule />
           </div>
         </div>
       </main>
