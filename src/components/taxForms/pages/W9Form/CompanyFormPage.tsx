@@ -315,7 +315,6 @@
 
 // export default CompanyForm;
 
-
 // CompanyForm.tsx
 import React, { useState } from "react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
@@ -352,7 +351,7 @@ const CompanyForm: React.FC<{
         autoReminders: company.autoReminders || true,
         reminderDays: company.reminderDays || 4,
         stopAfterAttempts: company.stopAfterAttempts || 3,
-        ...company
+        ...company,
       } as Company);
     }
   };
@@ -531,7 +530,7 @@ const CompanyForm: React.FC<{
                     setCompany({ ...company, email: e.target.value })
                   }
                   className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  placeholder="bellarustmaster786@gmail.com"
+                  placeholder="example@gmail.com"
                   required
                 />
               </div>

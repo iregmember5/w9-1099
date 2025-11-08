@@ -25,7 +25,7 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
     data.header_config ||
     data.sections?.find((section) => section.type === "header")?.data?.config;
 
-  const { header_cta_primary, header_cta_primary_url, color_theme } = data;
+  const { header_cta_primary, color_theme } = data;
 
   const primaryColor = color_theme?.primary_color || "#3B82F6";
   const textColor = color_theme?.text_color || "#1F2937";
@@ -177,7 +177,6 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
               {siteName}
             </div>
           </div>
-
           {/* Center: Navigation Links (desktop) */}
           {navbarStyle !== "centered" && (
             <div className="hidden md:flex items-center gap-6 mx-8 flex-1 justify-center">
@@ -264,47 +263,33 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
                 ))}
             </div>
           )}
-
           {/* Right: CTA + Mobile button */}
+
           <div className="flex items-center gap-3">
             {/* Navbar CTA from header_config (priority) */}
             {navbarCTA?.text && (
-              <a
-                href={navbarCTA.url || "#"}
+              <button
+                onClick={onShowLogin}
                 className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
                 style={{
                   backgroundColor: primaryColor,
                 }}
               >
                 {navbarCTA.text}
-              </a>
+              </button>
             )}
 
             {/* Fallback to header CTA if no navbar CTA */}
             {!navbarCTA?.text && header_cta_primary && (
-              <>
-                {header_cta_primary_url ? (
-                  <a
-                    href={header_cta_primary_url}
-                    className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
-                    style={{
-                      backgroundColor: primaryColor,
-                    }}
-                  >
-                    {header_cta_primary}
-                  </a>
-                ) : (
-                  <button
-                    onClick={onShowLogin}
-                    className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
-                    style={{
-                      backgroundColor: primaryColor,
-                    }}
-                  >
-                    {header_cta_primary}
-                  </button>
-                )}
-              </>
+              <button
+                onClick={onShowLogin}
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold shadow-md transform transition hover:-translate-y-0.5 hover:shadow-lg"
+                style={{
+                  backgroundColor: primaryColor,
+                }}
+              >
+                {header_cta_primary}
+              </button>
             )}
 
             {/* Mobile Hamburger */}
@@ -493,46 +478,35 @@ function GlassNavbar({ data, onShowLogin }: GlassNavbarProps) {
 
             {/* Mobile CTA */}
             {navbarCTA?.text ? (
-              <a
-                href={navbarCTA.url || "#"}
-                className="mt-2 inline-block px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
+              <button
+                onClick={() => {
+                  if (onShowLogin) {
+                    onShowLogin();
+                    setOpen(false);
+                  }
+                }}
+                className="mt-2 w-full px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
                 style={{
                   backgroundColor: primaryColor,
                 }}
-                onClick={() => setOpen(false)}
               >
                 {navbarCTA.text}
-              </a>
+              </button>
             ) : header_cta_primary ? (
-              <>
-                {header_cta_primary_url ? (
-                  <a
-                    href={header_cta_primary_url}
-                    className="mt-2 inline-block px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
-                    style={{
-                      backgroundColor: primaryColor,
-                    }}
-                    onClick={() => setOpen(false)}
-                  >
-                    {header_cta_primary}
-                  </a>
-                ) : (
-                  <button
-                    onClick={() => {
-                      if (onShowLogin) {
-                        onShowLogin();
-                        setOpen(false);
-                      }
-                    }}
-                    className="mt-2 w-full px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
-                    style={{
-                      backgroundColor: primaryColor,
-                    }}
-                  >
-                    {header_cta_primary}
-                  </button>
-                )}
-              </>
+              <button
+                onClick={() => {
+                  if (onShowLogin) {
+                    onShowLogin();
+                    setOpen(false);
+                  }
+                }}
+                className="mt-2 w-full px-4 py-2 rounded-lg text-white font-semibold text-center shadow-md"
+                style={{
+                  backgroundColor: primaryColor,
+                }}
+              >
+                {header_cta_primary}
+              </button>
             ) : null}
           </div>
         </div>

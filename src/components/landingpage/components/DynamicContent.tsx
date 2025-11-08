@@ -430,53 +430,129 @@ const DynamicContentRenderer: React.FC<{ block: DynamicContentBlock }> = ({
       );
 
     case "dynamic_list":
+      // Add proper error handling and data validation
+      const dynamicListData = block.value || {};
+
       return (
         <div className="mb-16">
-          {block.value.heading && (
+          {dynamicListData.heading && (
             <h3 className="text-4xl font-bold mb-4 text-gray-800">
-              {block.value.heading}
+              {dynamicListData.heading}
             </h3>
           )}
-          {block.value.description && (
+          {dynamicListData.description && (
             <p className="text-gray-600 mb-10 text-xl leading-relaxed">
-              {block.value.description}
+              {dynamicListData.description}
             </p>
           )}
           <div className="space-y-8">
-            {block.value.items?.map((item: any, idx: number) => (
-              <div
-                key={idx}
-                className="bg-white rounded-2xl p-8 hover:shadow-xl transition-all duration-300 border border-gray-100"
-              >
-                {item.type === "custom_item" && (
-                  <>
-                    {/* Icon for custom items */}
-                    {item.value.icon && (
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-blue-50">
-                        <span className="text-2xl text-blue-600">
-                          {item.value.icon}
-                        </span>
-                      </div>
+            {/* Safely handle items array */}
+            {Array.isArray(dynamicListData.items) &&
+              dynamicListData.items.map((item: any, idx: number) => {
+                // Validate item structure
+                if (!item || typeof item !== "object") return null;
+
+                const itemType = item.type || "";
+                const itemValue = item.value || {};
+
+                return (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-2xl p-8 hover:shadow-xl transition-all duration-300 border border-gray-100"
+                  >
+                    {itemType === "custom_item" && (
+                      <>
+                        {/* Icon for custom items */}
+                        {itemValue.icon && (
+                          <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-blue-50">
+                            <span className="text-2xl text-blue-600">
+                              {itemValue.icon}
+                            </span>
+                          </div>
+                        )}
+
+                        <h4 className="text-3xl font-bold mb-4 text-gray-800">
+                          {itemValue.title || "Untitled"}
+                        </h4>
+
+                        {/* Safely handle content - could be string or RichText */}
+                        {itemValue.content && (
+                          <div
+                            className="prose prose-lg max-w-none mb-6 text-gray-700"
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                typeof itemValue.content === "string"
+                                  ? itemValue.content
+                                  : String(itemValue.content || ""),
+                            }}
+                          />
+                        )}
+
+                        {itemValue.image && itemValue.image.url && (
+                          <img
+                            src={getFullImageUrl(itemValue.image.url)}
+                            alt={itemValue.image.title || "Content image"}
+                            className="mt-6 rounded-xl w-full object-cover max-h-96 shadow-lg"
+                          />
+                        )}
+                      </>
                     )}
 
-                    <h4 className="text-3xl font-bold mb-4 text-gray-800">
-                      {item.value.title}
-                    </h4>
-                    <div
-                      className="prose prose-lg max-w-none mb-6 text-gray-700"
-                      dangerouslySetInnerHTML={{ __html: item.value.content }}
-                    />
-                    {item.value.image && (
-                      <img
-                        src={item.value.image.url}
-                        alt={item.value.image.title || "Content image"}
-                        className="mt-6 rounded-xl w-full object-cover max-h-96 shadow-lg"
-                      />
+                    {/* Add support for other item types */}
+                    {itemType === "feature" && (
+                      <>
+                        {itemValue.icon && (
+                          <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-blue-50">
+                            <span className="text-2xl text-blue-600">
+                              {itemValue.icon}
+                            </span>
+                          </div>
+                        )}
+
+                        <h4 className="text-3xl font-bold mb-4 text-gray-800">
+                          {itemValue.title || "Feature"}
+                        </h4>
+
+                        {itemValue.description && (
+                          <p className="text-gray-600 text-lg leading-relaxed">
+                            {itemValue.description}
+                          </p>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-            ))}
+
+                    {itemType === "benefit" && (
+                      <>
+                        {itemValue.icon && (
+                          <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-green-50">
+                            <span className="text-2xl text-green-600">
+                              {itemValue.icon}
+                            </span>
+                          </div>
+                        )}
+
+                        <h4 className="text-3xl font-bold mb-4 text-gray-800">
+                          {itemValue.title || "Benefit"}
+                        </h4>
+
+                        {itemValue.description && (
+                          <p className="text-gray-600 text-lg leading-relaxed">
+                            {itemValue.description}
+                          </p>
+                        )}
+
+                        {itemValue.stat && (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                            <p className="text-2xl font-bold text-gray-800">
+                              {itemValue.stat}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
           </div>
         </div>
       );
